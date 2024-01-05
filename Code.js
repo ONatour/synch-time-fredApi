@@ -31,8 +31,7 @@ function onOpen() {
   var spreadsheet = SpreadsheetApp.getActive();
   var menuItems = [
     {name: 'Get FRED Data', functionName: 'GetFredData'},
-    {name: 'FredSheets Panel', functionName: 'showSidebar'},
-    {name: 'FRED Search', functionName:'showSearchSidebar'}
+    {name: 'FredSheets Panel', functionName: 'showSidebar'}
   ];
   spreadsheet.addMenu('FRED', menuItems);
 }
@@ -325,28 +324,29 @@ function showSearchSidebar() {
 function SearchFredSeries(search_text, limit) {
   const sheetname = 'Search';
   var apiKey = getApiKey();
-  var sheet = SpreadsheetApp.getActive()
-  if (sheet == null) {
-    throw "Error: Please add a sheet named 'Search'";
-  }
+  // var sheet = SpreadsheetApp.getActive()
+  // if (sheet == null) {
+  //   throw "Error: Please add a sheet named 'Search'";
+  // }
   sheet.activate();
   var results = fredSearchSeries(apiKey, search_text, limit);
   var array = prepareSearchResults(results);
-  if (array.length == 0) {
-    throw `Error: No data found for search text "${search_text}"`;
-  }
+  return array;/////////
+  // if (array.length == 0) {
+  //   throw `Error: No data found for search text "${search_text}"`;
+  // }
 
-  const headerRows = 4;
-  var range = sheet.getDataRange();
-  var r = sheet.getRange(headerRows+1, 1, 1);
-  if (range.getNumRows() > headerRows) {
-    r = range.offset(headerRows, 0, range.getNumRows()-headerRows, range.getNumColumns());
-    r.clear();
-  } 
-  r = r.offset(0, 0, array.length, array[0].length);
-  r.setValues(array);
-  r.setWrap(true);
-  return array.length;
+  // const headerRows = 4;
+  // var range = sheet.getDataRange();
+  // var r = sheet.getRange(headerRows+1, 1, 1);
+  // if (range.getNumRows() > headerRows) {
+  //   r = range.offset(headerRows, 0, range.getNumRows()-headerRows, range.getNumColumns());
+  //   r.clear();
+  // } 
+  // r = r.offset(0, 0, array.length, array[0].length);
+  // r.setValues(array);
+  // r.setWrap(true);
+  // return array.length;
 }
 
 function prepareSearchResults(results) {
@@ -432,6 +432,10 @@ function showSidebar() {
 //prints back into the sheet what the search feild has
 function repeatSearch(s) {
   sheet.appendRow([s])
+  const res = SearchFredSeries(s,5);
+  for(let i = 0; i < res.length; i++){
+    sheet.appendRow(res[i]);
+  }
   
 }
 

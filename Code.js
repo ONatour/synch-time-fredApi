@@ -30,21 +30,25 @@ To use it, you'll need:
 function onOpen() {
   var spreadsheet = SpreadsheetApp.getActive();
   var menuItems = [
-    {name: 'Get FRED Data', functionName: 'GetFredData'}
+    {name: 'Get FRED Data', functionName: 'GetFredData'},
+    {name: 'FredSheets Panel', functionName: 'showSidebar'},
+    {name: 'FRED Search', functionName:'showSearchSidebar'}
   ];
   spreadsheet.addMenu('FRED', menuItems);
 }
 
 // getApiKey returns the value in the cell with named range, 'APIKey'.
 function getApiKey() {
-  var apiKeyCell = SpreadsheetApp.getActiveSpreadsheet().getRangeByName('APIKey');
-  if (apiKeyCell === null) {
-    throw 'Error: Please set APIKey on the first sheet using a Named Range called, "APIKey"';
-  }
-  if (apiKeyCell.getValue() == '') {
-    throw 'Error: Please set APIKey on the first sheet';
-  }
-  return apiKeyCell.getValue();
+  return '2bade6f9caaef5efb4632d639cb8c8c1';
+
+  //var apiKeyCell = SpreadsheetApp.getActiveSpreadsheet().getRangeByName('APIKey');
+  // if (apiKeyCell === null) {
+  //   throw 'Error: Please set APIKey on the first sheet using a Named Range called, "APIKey"';
+  // }
+  // if (apiKeyCell.getValue() == '') {
+  //   throw 'Error: Please set APIKey on the first sheet';
+  // }
+  // return apiKeyCell.getValue();
 }
 
 // GetFredData() is the main function. It loads specs from the "Series" sheet, then loads
@@ -321,7 +325,7 @@ function showSearchSidebar() {
 function SearchFredSeries(search_text, limit) {
   const sheetname = 'Search';
   var apiKey = getApiKey();
-  var sheet = SpreadsheetApp.getActive().getSheetByName(sheetname);
+  var sheet = SpreadsheetApp.getActive()
   if (sheet == null) {
     throw "Error: Please add a sheet named 'Search'";
   }
@@ -410,3 +414,37 @@ function insertConstants(ss, sheet, row, name, codes) {
   r.setBackground('lightgrey');
   return array.length;
 }
+
+
+///////////////
+//code by omar
+///////////////
+
+const sheet = SpreadsheetApp.getActiveSheet();
+
+// Displays html sidebar.
+function showSidebar() {
+  let html = HtmlService.createHtmlOutputFromFile('index').setTitle('FREDsheets');
+  SpreadsheetApp.getUi() // Or DocumentApp or SlidesApp or FormApp.
+    .showSidebar(html);
+}
+
+//prints back into the sheet what the search feild has
+function repeatSearch(s) {
+  sheet.appendRow([s])
+  
+}
+
+
+
+
+
+
+
+
+// Show the search sidebar
+// function showSearchSidebar() {
+//   var html = HtmlService.createHtmlOutputFromFile('Search')
+//     .setTitle('Search Criteria');
+//   SpreadsheetApp.getUi().showSidebar(html);
+// }
